@@ -1,3 +1,175 @@
-<!doctype>
-<h1>Physical Web Cookbook</h1>
-<blockquote>To Do</blockquote>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+
+    <title>Narrow Jumbotron Template for Bootstrap</title>
+  
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.2.0/css/bootstrap.min.css">
+    <!-- Custom styles for this template -->
+    <link href="css/jumbotron-narrow.css" rel="stylesheet">
+
+
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="//cdnjs.cloudflare.com/ajax/libs/respond.js/1.4.2/respond.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+      <div class="header">
+        <ul class="nav nav-pills pull-right" role="tablist">
+          <li role="presentation" class="active"><a href="#">Home</a></li>
+          <li role="presentation"><a href="#about">About</a></li>
+          <li role="presentation"><a href="#contact">Contact</a></li>
+        </ul>
+        <h3 class="text-muted">Physical Web Cookbook</h3>
+      </div>
+
+      <div class="jumbotron">
+        <h1>Jumbotron heading</h1>
+        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+
+        <form role="form">
+          <div class="form-group">
+            <label for="inputURI">Target URI</label>
+            <input type="url" class="form-control" id="inputURI" placeholder="http://">
+          </div>
+        </form>
+
+        <p><a id="pwc-download" class="btn btn-lg btn-success" href="#" role="button" download="physical_web.ino">Download</a></p>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-6">
+          <h4>Subheading</h4>
+          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+          <h4>Subheading</h4>
+          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+          <h4>Subheading</h4>
+          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+
+        <div class="col-lg-6">
+          <h4>Subheading</h4>
+          <p>Donec id elit non mi porta gravida at eget metus. Maecenas faucibus mollis interdum.</p>
+
+          <h4>Subheading</h4>
+          <p>Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Cras mattis consectetur purus sit amet fermentum.</p>
+
+          <h4>Subheading</h4>
+          <p>Maecenas sed diam eget risus varius blandit sit amet non magna.</p>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>Made by <a href="https://twitter.com/paddy2k">@paddy2k</a></p>
+      </div>
+    </div> <!-- /container -->
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"></script>
+
+<script type="text/javascript">
+  $.fn.ready(function() {
+    $('#inputURI').on('change', function(){
+      var uri = this.value;
+      var maxLength = 18; // Max length of physical web URIs
+      var advertisementOffset = 5; // 
+      // code is array index, e.g. "http://www." is 0
+      var expansionCodes = [ "http://www.", "https://www.", "http://", "https://", "tel:", "mailto:", "geo:", ".com", ".org", ".edu"  ];
+      var length, data;
+
+      var parts = [];
+      expansionCodes.forEach(function(code, index){
+        uri = uri.replace(code, String.fromCharCode(index));
+      });
+
+      Array.prototype.forEach.call(uri, function(character){
+        var index = character.charCodeAt();
+        if (expansionCodes[index]){
+          character = expansionCodes[index];
+        }
+
+        parts.push({
+          char: character,
+          hex: ("0" + index.toString(16)).substr(-2).toUpperCase()
+        });
+      });
+
+      if(parts.length > maxLength){
+        throw "URI Too Long";
+        return false;
+      }
+
+      length = 
+              ("0" + (parts.length + advertisementOffset).toString(16))
+              .substr(-2)
+              .toUpperCase();
+
+      data = {
+        length: length, 
+        parts: parts
+      }
+
+
+
+      var template = $('#rfduino-template').html();
+      Mustache.parse(template);   // optional, speeds up future uses
+      var rendered = Mustache.render(template, data);
+
+      var blob = new Blob([rendered], {'type': 'application/octet-stream'});
+      document.getElementById('pwc-download').href = window.URL.createObjectURL(blob);
+    });
+  });
+</script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="js/ie10-viewport-bug-workaround.js"></script>
+
+
+<script id="rfduino-template" type="x-tmpl-mustache">// Physical-Web example for RFDigital RFduino
+#include <RFduinoBLE.h>
+
+uint8_t advdata[] =
+{
+  0x03,  // length
+  0x03,  // Param: Service List
+  0xD8, 0xFE,  // URI Beacon ID
+  0x{{length}},  // length
+  0x16,  // Service Data
+  0xD8, 0xFE, // URI Beacon ID
+  0x00,  // flags
+  0x20,  // power
+{{#parts}}
+  0x{{hex}},  // "{{{char}}}"
+{{/parts}}
+};
+
+void setup() {
+  RFduinoBLE_advdata = advdata;
+  RFduinoBLE_advdata_len = sizeof(advdata);
+  RFduinoBLE.advertisementInterval = 1000; // advertise every 1000ms
+  RFduinoBLE.begin();
+}
+
+void loop() {
+  RFduino_ULPDelay(INFINITE);   // switch to lower power mode
+}
+</script>
+  </body>
+</html>
