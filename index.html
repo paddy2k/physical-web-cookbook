@@ -39,12 +39,11 @@
       </div>
 
       <div class="jumbotron">
-        <h1>Jumbotron heading</h1>
-        <p class="lead">Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+        <h1>Generate Sketch</h1>
+        <p class="lead">Enter the URL below that you wish to broadcast</p>
 
-        <form role="form">
+        <form role="form" id="URIform">
           <div class="form-group">
-            <label for="inputURI">Target URI</label>
             <input type="url" class="form-control" id="inputURI" placeholder="http://">
           </div>
         </form>
@@ -136,6 +135,13 @@
       var blob = new Blob([rendered], {'type': 'application/octet-stream'});
       document.getElementById('pwc-download').href = window.URL.createObjectURL(blob);
     });
+
+    $('#URIform').on('submit', function(e){
+      e.preventDefault();
+
+      $('#inputURI').trigger('change');
+      document.getElementById('pwc-download').click();
+    })
   });
 </script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
