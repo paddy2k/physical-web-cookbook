@@ -1,0 +1,17 @@
+{
+  "name": "physical-web-cookbook",
+  "version": "0.0.0",
+  "homepage": "https://github.com/paddy2k/physical-web-cookbook",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "highlight.js": "~7.3.x"
+  }
+}
