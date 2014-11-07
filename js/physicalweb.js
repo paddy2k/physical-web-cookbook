@@ -61,4 +61,10 @@ $.fn.ready(function() {
     var blob = new Blob([$output.text()], {'type': 'application/octet-stream'});
     this.href = window.URL.createObjectURL(blob);
   });
+
+  $('#pwc-reset').on('click', function(){
+    $('#pwc-output').hide();
+    $('#inputURI').val('http://');
+    $(document).scrollTop(0);
+  });
 });
